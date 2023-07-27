@@ -1,0 +1,99 @@
+python -m venv myenv           --> used to create a virutal enviroment
+.\myenv\Scripts\activate        --> command to run the virtual enviroment (after activating, any third party library that we install will automatically be installed in this new virtual enviroment)
+
+its a framework
+can crawl through websites and go though each and every sub link inside of a website and scrape them as well.
+spider - a program capable of crawling the web
+scrapy startproject booksdata - start a project
+scrapy genspider books toscrape.com - generates a spider named books for crawling the website
+scrapy crawl books - used to start crawling the website
+
+scrapy shell --> used to run scrapy shell (where we can try out all the commands to extract data)
+fetch('https://books.toscrape.com/') - used to fetch the website and store its html content in a "response" named variable
+scrapy shell is used to see what works and doesn't with our CSS selectors
+
+USING CSS SELECTORS TO EXTRACT BOOK DETAILS:
+response.css("article.product_pod") -> fetch info of all the article tags with "product_pod" as their class.
+books = response.css("article.product_pod") -> stores the fetched books details inside a book variable
+books.css("h3 a::text") -> extracts the text of the a tag which is inside of a h3 tag
+books.css("h3 a").attrib["href"] --> extracts our the attribute info of the a tag which is inside of the h3 tag
+books.css("div.product_price p.price_color::text") -> goes inside the div tag with "product_price" as its class and does the same for the other tag and extracts its text
+
+xpaths are used when its not possible to extract info by using css selectors (when the tags neither have a class nor an id)
+response.xpath("//div[@id='product_description']/following-sibling::p/text()").get()    --> used to get product description
+response.xpath("//ul[@class='breadcrumb']/li[@class='active']/preceding-sibling::li[1]/a/text()").get()   --> used to get the category of the book
+
+scrapy crawl bookspider -O bookdata.json  --> used to run the spider but insted of showing the output on screen, it saves it inside a file naed as bookdata.json
+items and items pipelines are used to better structure and clean our data before saving it in a database
+
+scrapy items - used to better structure our data
+we can define specific items that we're scrapping in our items file
+One reason to define an item in the items file is that when we scrape the products and try to store them in a database and we miss-spell the item name, it'll not get stored in the database as it will throw no error whereas if we use the items file, it'll throw an error and let us known that the specific item we're trying to store does not exist
+strandrization of data is import before it gets saved into a database especially when you start scrapping at a larger scale
+
+if we're scraping alot of data, we should be using pipelines but if the data is not alot, we can use serializers in items file
+If we're using pipelines, we shoud go in our settings options and enable it
+
+
+scrapy pipelines - used to clean our data
+we can save our scrapped data into different file formats and later store them in a database using pipelines
+VIA COMMAND LINE:
+scrapy crawl bookspider -O bookdata.csv         --> saves data in csv format in a new file named as "bookdata.csv"
+scrapy crawl bookspider -o bookdata.csv         --> used to append the data (after using the above command)
+same process will be used for "json" and other types of file formats
+
+VIA FEEDS:
+specifying in settings where our data will be saved - check settings (FEEDS)
+We can specify (can be used for overwriting) the feed data in our spider.py file using the custom_settings optionn:
+- we can specify certian settings in our spider.py file as well, not all of our settings have to be in the settings file
+- just make sure to set the overwrite parameter as true
+    custom_settings = {
+        "FEEDS": {
+            "book_data.json": {"format": "json", "overwrite": True}
+        }
+    }
+
+
+VIA PILELINES - saving data into databases:
+
+
+Fake user agents and headers - used to avoid getting blocked when scraping diff websites
+Everything from our request-headers tab is sent when we request a page to view
+The user-agent is the thing of our concern. It contains all the info about who we are and sends it to the server we request the web-page from.
+The rule of thumb to check where it is legal to scrape a website or not is that if we don't have to login and the data is publically available online, then it is okay but for vice versa, it is not legal.
+Usually the websites only look for the user-agents therefore changing it will make things work. But for more complex websites where they look for all the info inside the request-headers, it is necessary to changing all of the information everytime we request the page for access.
+
+We can use middle-wares to get different user-agents and request-headers for everytime we try to request the website
+
+We will create a list and roate through that list of user agents in order to achieve what we want.
+
+Since the user-agent-list in the spider.py file is not enough, we will use fake-user-agent-api which will help us in obtaining a list of thousands of fake user agents. We will implement in our middlewares where we would roate through all the fake user agents.
+
+process_request() is one of the functions that scrapy looks for when we're working with middlewares
+
+We're creating seperate middleware classes for both user-agents and the overall headers
+There are multiple ways of obtaining fake user agents - there's a simple method where we add fake-user-agents to headers manually and then there's a more complex method where we add it using middle wares.
+
+
+Rotating proxies and proxies api
+Using proxies to bypass anti-bot blockers that websites have
+There are many free proxies available online. However, the downside is that since everyone uses them, they're extremely slow.
+We can either use a list of free proxies or use a proxy provider which will handle the rotating of proxies.
+
+
+
+
+
+
+
+Deploying spiders in cloud - run spiders on a server in cloud
+There are various tools available for deployment.
+1) ScrapyD - free and opensource
+
+
+
+
+
+
+
+
