@@ -19,4 +19,6 @@ Scrapy-Book-Scraper is a web scraping project built using the Scrapy framework. 
 - This project is intended for educational purposes and to demonstrate the capabilities of web scraping with Scrapy.
 - Web scraping plays a crucial role in data extraction for AI and ML applications, enabling researchers and developers to gather relevant and diverse datasets for training machine learning models.
 
+This repo contains a "notes.txt" file that includes all the necessary commands and brief info about most of the functions used in this scraper. If you're interested in deep-diving into this scraper, feel free to check it out.
+
 If you encounter any issues or have suggestions for improvement, feel free to create an issue on the repository or submit a pull request.
